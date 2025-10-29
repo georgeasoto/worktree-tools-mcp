@@ -19,17 +19,23 @@ MCP server for automated git worktree management with Claude. Enables Claude to 
 npm install -g worktree-tools-mcp
 ```
 
-### Option 2: npx (No Installation)
+### Option 2: Install from GitHub
+
+```bash
+npm install -g git+https://github.com/georgeasoto/worktree-tools-mcp.git
+```
+
+### Option 3: npx (No Installation)
 
 Use directly with npx:
 ```bash
-npx worktree-tools-mcp
+npx -y git+https://github.com/georgeasoto/worktree-tools-mcp.git
 ```
 
-### Option 3: Local Development
+### Option 4: Local Development
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/georgeasoto/worktree-tools-mcp.git
 cd worktree-tools-mcp
 npm install
 npm run build
@@ -40,24 +46,39 @@ npm link
 
 Add to your Claude Code configuration file (typically `~/.config/Claude/claude_desktop_config.json` or similar):
 
+### Option 1: Using npx (Recommended - Always up to date)
+
 ```json
 {
   "mcpServers": {
     "worktree-tools": {
       "command": "npx",
-      "args": ["worktree-tools-mcp"]
+      "args": ["-y", "git+https://github.com/georgeasoto/worktree-tools-mcp.git"]
     }
   }
 }
 ```
 
-Or if installed globally:
+### Option 2: If installed globally
 
 ```json
 {
   "mcpServers": {
     "worktree-tools": {
       "command": "worktree-tools-mcp"
+    }
+  }
+}
+```
+
+### Option 3: Local development
+
+```json
+{
+  "mcpServers": {
+    "worktree-tools": {
+      "command": "node",
+      "args": ["/Users/YOUR_USERNAME/worktree-tools-mcp/dist/index.js"]
     }
   }
 }
@@ -229,12 +250,12 @@ npm run build && node dist/index.js
 
 ## Companion Bash Scripts
 
-This MCP server complements the [worktree-tools bash scripts](https://github.com/YOUR_ORG/worktree-tools). You can use both:
+This MCP server complements the worktree-tools bash scripts (located at `~/.checkout-scripts/` or `~/.worktree-tools/`). You can use both:
 
 - **Bash scripts** - For manual CLI usage
 - **MCP server** - For Claude automation
 
-Both implement the same logic and can be used interchangeably.
+Both implement the same logic and can be used interchangeably. The bash scripts provide a zero-dependency CLI interface, while the MCP server enables Claude to automate worktree operations.
 
 ## Requirements
 
