@@ -62,8 +62,8 @@ export async function createWorktreeTool(args: CreateWorktreeArgs): Promise<Crea
     normalizedBranchName
   );
 
-  // Create the worktree
-  await createWorktree(mainRepoRoot, worktreePath, fullBranchName, 'origin/master');
+  // Create the worktree (auto-detects origin/main or origin/master)
+  await createWorktree(mainRepoRoot, worktreePath, fullBranchName);
 
   // Install dependencies
   let dependenciesInstalled = false;

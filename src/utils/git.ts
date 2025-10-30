@@ -103,18 +103,42 @@ export async function listWorktrees(repoPath: string): Promise<WorktreeInfo[]> {
 }
 
 /**
+ * Auto-detect the default branch (main or master)
+ */
+export async function getDefaultBranch(repoPath: string): Promise<string> {
+  const git = simpleGit(repoPath);
+
+  try {
+    // Check if origin/main exists
+    await git.raw(['show-ref', '--verify', '--quiet', 'refs/remotes/origin/main']);
+    return 'origin/main';
+  } catch {
+    // Try origin/master
+    try {
+      await git.raw(['show-ref', '--verify', '--quiet', 'refs/remotes/origin/master']);
+      return 'origin/master';
+    } catch {
+      throw new Error('Could not find origin/main or origin/master branch');
+    }
+  }
+}
+
+/**
  * Create a new worktree
  */
 export async function createWorktree(
   repoPath: string,
   worktreePath: string,
   branchName: string,
-  baseBranch: string = 'origin/master'
+  baseBranch?: string
 ): Promise<void> {
   const git = simpleGit(repoPath);
 
   // Fetch latest changes
   await git.fetch('origin');
+
+  // Auto-detect default branch if not provided
+  const branch = baseBranch || await getDefaultBranch(repoPath);
 
   // Create worktree
   await git.raw([
@@ -123,7 +147,7 @@ export async function createWorktree(
     worktreePath,
     '-b',
     branchName,
-    baseBranch
+    branch
   ]);
 }
 

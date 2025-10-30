@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { simpleGit } from 'simple-git';
+import { getDefaultBranch } from './git.js';
 
 export interface PullRequestResult {
   url: string;
@@ -115,15 +116,18 @@ export async function createPullRequest(
 /**
  * Get commit messages since branching from base
  */
-export async function getCommitsSinceBase(repoPath: string, baseBranch: string = 'master'): Promise<string[]> {
+export async function getCommitsSinceBase(repoPath: string, baseBranch?: string): Promise<string[]> {
   const git = simpleGit(repoPath);
 
   // Get current branch
   const currentBranch = await git.revparse(['--abbrev-ref', 'HEAD']);
 
+  // Auto-detect default branch if not provided
+  const branch = baseBranch || await getDefaultBranch(repoPath);
+
   // Get commits between base and current branch
   const log = await git.log({
-    from: `origin/${baseBranch}`,
+    from: branch,
     to: currentBranch
   });
 
